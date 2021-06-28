@@ -27,6 +27,26 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> {
+
+  TextEditingController _nickController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  bool checkName = false;
+  bool checkPassword = false;
+  bool validButton = false;
+
+  void checkFields(){
+    if (checkName && checkPassword){
+      validButton = true;
+    }
+  }
+
+  void startMainScreen(){
+    setState(() {
+      print("hello_world!");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +63,7 @@ class LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             _logo(),
-            _authorization()
+            _authorization(context)
           ],
         ),
       ),
@@ -62,7 +82,7 @@ class LoginPageState extends State<LoginPage> {
         ));
   }
 
-  Widget _authorization() {
+  Widget _authorization(BuildContext context) {
     return Container(
         height: 450.0,
         width: 350.0,
@@ -84,9 +104,17 @@ class LoginPageState extends State<LoginPage> {
                     children: [
                       Container(
                         child: TextField(
-                            style: TextStyle(fontSize: 14),
-                            decoration: InputDecoration(labelText: "Nickname"),
-                            keyboardType: TextInputType.name
+                          style: TextStyle(fontSize: 14),
+                          decoration: InputDecoration(labelText: "Nickname"),
+                          keyboardType: TextInputType.name,
+                          controller: _nickController,
+                          onChanged: (String value) {
+                            if (!value.contains(RegExp(r'[^\w\s]+')) && value.isNotEmpty) {
+                              checkName = true;
+                              checkFields();
+                              print("Nickname: " + value + " checkName = " + checkName.toString());
+                            }
+                          },
                         ),
                         width: 250,
                       ),
@@ -95,6 +123,14 @@ class LoginPageState extends State<LoginPage> {
                           style: TextStyle(fontSize: 14),
                           decoration: InputDecoration(labelText: "Password"),
                           obscureText: true,
+                          controller: _passwordController,
+                          onChanged: (String value) {
+                            if (value.length >= 3 && value.length <=9) {
+                              checkPassword = true;
+                              checkFields();
+                              print("Password: " + value + " checkPassword = " + checkPassword.toString());
+                            }
+                          },
                         ),
                         width: 250,
                       ),
@@ -109,12 +145,12 @@ class LoginPageState extends State<LoginPage> {
                               colors: [const Color(0xFFE74249), const Color(0xFFBB4E75)],
                             ),
                           ),
-                          child: MaterialButton(
+                          child: RaisedButton(
                             child: Text(
                               'Sign in',
                               style: TextStyle(color: Colors.white, fontSize: 12),
                             ),
-                            onPressed: null,
+                            onPressed: validButton ? null : startMainScreen,
                           ),
                         ),
                         width: 250,
