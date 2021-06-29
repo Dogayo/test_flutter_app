@@ -1,13 +1,10 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:test_flutter_app/model/news.dart';
 import 'package:test_flutter_app/repositories/authentication.dart';
 
-class MainScreen extends StatefulWidget{
-
+class MainScreen extends StatefulWidget {
   final String token;
 
   MainScreen(this.token);
@@ -16,17 +13,14 @@ class MainScreen extends StatefulWidget{
   State<StatefulWidget> createState() {
     return _MainScreenState();
   }
-
 }
 
-class _MainScreenState extends State<MainScreen>{
+class _MainScreenState extends State<MainScreen> {
   List<News> currentNews = [];
   List<bool> _likes = [];
 
-
   @override
   Widget build(BuildContext context) {
-
     return Container(
       child: Container(
         color: Colors.white,
@@ -39,40 +33,43 @@ class _MainScreenState extends State<MainScreen>{
     );
   }
 
-  Widget _card(News news, int index){
+  Widget _card(News news, int index) {
     return Card(
       elevation: 2.0,
       margin: EdgeInsets.all(15.0),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+        topLeft: const Radius.circular(40.0),
+        bottomRight: const Radius.circular(40.0),
+      )),
       child: Container(
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: const Radius.circular(40.0),
-              bottomRight: const Radius.circular(40.0),
-            )),
+        padding: EdgeInsets.only(left: 25.0, top: 10.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Row(
               children: [
-                Text(news.firstName + " " + news.lastName,
+                Text(
+                  news.firstName + " " + news.lastName,
                   style: TextStyle(fontSize: 16, color: Colors.black),
                 )
               ],
             ),
-            Row(
-              children: [
-                Text(news.caption!, style: TextStyle(fontSize: 16, color: Colors.black54))
+            Row(children: [
+              Text(news.caption!,
+                  style: TextStyle(fontSize: 16, color: Colors.black54))
             ]),
             Row(
               children: [
                 IconButton(
                   onPressed: () {
-                      setState(() {
-                        _likes[index] = !_likes[index];
-                      });
+                    setState(() {
+                      _likes[index] = !_likes[index];
+                    });
                   },
-                  icon: Icon(Icons.favorite_border, color: _likes[index] ? Colors.red : Colors.grey, size: 25.0),
+                  icon: Icon(Icons.favorite_border,
+                      color: _likes[index] ? Colors.red : Colors.grey,
+                      size: 25.0),
                 )
               ],
             )
@@ -84,14 +81,15 @@ class _MainScreenState extends State<MainScreen>{
 
   @override
   void initState() {
-    if (currentNews.isEmpty){
+    if (currentNews.isEmpty) {
       getNews();
     }
     super.initState();
   }
 
-  void getNews(){
-    AuthenticationRepository authenticationRepository = new AuthenticationRepository();
+  void getNews() {
+    AuthenticationRepository authenticationRepository =
+        new AuthenticationRepository();
     Future<List<News>> news = authenticationRepository.getNews(widget.token);
 
     news.then((value) {
@@ -104,13 +102,11 @@ class _MainScreenState extends State<MainScreen>{
     });
   }
 
-  void redefinitionNews(){
-    for (News news in currentNews){
-      if (news.caption == null){
+  void redefinitionNews() {
+    for (News news in currentNews) {
+      if (news.caption == null) {
         news.caption = " ";
       }
     }
   }
-
-
 }
