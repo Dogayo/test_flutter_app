@@ -1,6 +1,8 @@
 
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/rendering.dart';
 import 'package:test_flutter_app/model/news.dart';
 import 'package:test_flutter_app/repositories/authentication.dart';
 
@@ -19,6 +21,7 @@ class MainScreen extends StatefulWidget{
 
 class _MainScreenState extends State<MainScreen>{
   List<News> currentNews = [];
+  List<bool> _likes = [];
 
 
   @override
@@ -26,19 +29,20 @@ class _MainScreenState extends State<MainScreen>{
 
     return Container(
       child: Container(
+        color: Colors.white,
         child: ListView.builder(
             itemCount: currentNews.length,
             itemBuilder: (context, i) {
-              return _card(currentNews[i]);
+              return _card(currentNews[i], i);
             }),
       ),
     );
   }
 
-  Widget _card(News news){
+  Widget _card(News news, int index){
     return Card(
       elevation: 2.0,
-      margin: EdgeInsets.all(10.0),
+      margin: EdgeInsets.all(15.0),
       child: Container(
         decoration: BoxDecoration(
             color: Colors.white,
@@ -51,10 +55,27 @@ class _MainScreenState extends State<MainScreen>{
           children: [
             Row(
               children: [
-                Text(news.firstName + " " + news.lastName, style: TextStyle(fontSize: 16, color: Colors.black),)
+                Text(news.firstName + " " + news.lastName,
+                  style: TextStyle(fontSize: 16, color: Colors.black),
+                )
               ],
             ),
-            Text(news.caption!, style: TextStyle(fontSize: 16, color: Colors.black54))
+            Row(
+              children: [
+                Text(news.caption!, style: TextStyle(fontSize: 16, color: Colors.black54))
+            ]),
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                      setState(() {
+                        _likes[index] = !_likes[index];
+                      });
+                  },
+                  icon: Icon(Icons.favorite_border, color: _likes[index] ? Colors.red : Colors.grey, size: 25.0),
+                )
+              ],
+            )
           ],
         ),
       ),
@@ -77,6 +98,7 @@ class _MainScreenState extends State<MainScreen>{
       //print('size value: ' + value.length.toString());
       setState(() {
         currentNews = value;
+        _likes = List.filled(currentNews.length, false);
         redefinitionNews();
       });
     });
