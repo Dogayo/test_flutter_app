@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:test_flutter_app/repositories/authentication.dart';
 import 'package:test_flutter_app/screens/main_news.dart';
+import 'package:test_flutter_app/model/news.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -32,9 +33,12 @@ class LoginPageState extends State<LoginPage> {
       setState(() {
         showToast("Переход на другой экран!", Colors.green, Colors.white);
         AuthenticationRepository authenticationRepository = AuthenticationRepository();
+
         Future<String> token = authenticationRepository.getToken();
-        token.then((value) =>
-            Navigator.push(context, MaterialPageRoute(builder: (context) => MainScreen({value}))));
+        token.then((value)
+        {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => MainScreen(value)));
+        });
 
       });
     } else {

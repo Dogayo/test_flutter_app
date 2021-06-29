@@ -2,25 +2,29 @@
 class News {
 
   int id;
-  String caption;
-  String username;
+  String? caption;
+  String firstName;
+  String lastName;
 
   News({
     required this.id,
-    required this.caption,
-    required this.username,
+    this.caption,
+    required this.firstName,
+    required this.lastName,
   });
 
   factory News.fromJson(Map<String, dynamic> json) => News(
     id: json["id"],
     caption: json["caption"],
-    username: json["username"]
+    firstName: json["user"]['firstName'],
+    lastName: json["user"]['lastName']
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "caption": caption,
-    "username": username,
+    "firstName": firstName,
+    "lastName": lastName,
   };
 
 }
