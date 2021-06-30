@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:test_flutter_app/repositories/authentication.dart';
 import 'package:test_flutter_app/screens/main_news.dart';
-import 'package:test_flutter_app/model/news.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -29,17 +28,20 @@ class LoginPageState extends State<LoginPage> {
   }
 
   void startMainScreen() {
+    FocusScope.of(context).unfocus();
     if (checkFields()) {
       setState(() {
-        showToast("Переход на другой экран!", Colors.green, Colors.white);
         AuthenticationRepository authenticationRepository = AuthenticationRepository();
-
         Future<String> token = authenticationRepository.getToken();
         token.then((value)
         {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => MainScreen(value)));
+          if (value == "false"){
+            showToast("Проверьте подключение к интернету!", Colors.grey, Colors.white);
+          } else {
+            showToast("Успешно!", Colors.green, Colors.white);
+            Navigator.push(context, MaterialPageRoute(builder: (context) => MainScreen(value)));
+          }
         });
-
       });
     } else {
       showToast("Данные в полях не корректны!", Colors.red, Colors.white);
@@ -111,8 +113,8 @@ class LoginPageState extends State<LoginPage> {
                   padding: EdgeInsets.only(top: 30),
                   child: Column(
                     children: [
-                      _input("Nickname", _nickController, false),
-                      _input("Password", _passwordController, true),
+                      _input("Nickname", _nickController, false, Icon(null)),
+                      _input("Password", _passwordController, true, Icon(Icons.remove_red_eye_outlined)),
                       _button(context),
                       Container(
                         padding: EdgeInsets.only(top: 60),
@@ -120,17 +122,25 @@ class LoginPageState extends State<LoginPage> {
                             style: TextStyle(fontSize: 12)),
                       ),
                       Container(
-                        padding: EdgeInsets.only(top: 8),
+                        padding: EdgeInsets.only(top: 8, left: 46),
                         child: Column(
                           children: [
-                            Text("политику использования данных",
+                            Row(
+                              children: [
+                              Text("политику использования данных",
                                 style: TextStyle(fontSize: 12, color: Colors
                                     .blue, decoration: TextDecoration
                                     .underline)),
-                            Text("политику в отношении файлов cookie",
-                                style: TextStyle(fontSize: 12, color: Colors
-                                    .blue, decoration: TextDecoration
-                                    .underline))
+                                ],
+                            ),
+                            Row(
+                              children: [
+                                Text("политику в отношении файлов cookie",
+                                    style: TextStyle(fontSize: 12, color: Colors
+                                        .blue, decoration: TextDecoration
+                                        .underline))
+                              ],
+                            )
                           ],
                         ),
                       )
@@ -145,11 +155,15 @@ class LoginPageState extends State<LoginPage> {
   }
 
   Widget _input(String label, TextEditingController controller,
-      bool obscureText) {
+      bool obscureText, Icon icon) {
     return Container(
       child: TextField(
         style: TextStyle(fontSize: 14),
-        decoration: InputDecoration(labelText: label),
+        decoration: InputDecoration(
+            labelText: label,
+            suffixIcon: IconButton(
+              icon: icon, onPressed: () {  },
+            ),),
         obscureText: obscureText,
         obscuringCharacter: "*",
         controller: controller,

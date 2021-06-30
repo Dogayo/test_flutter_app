@@ -21,15 +21,29 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text("News", style: TextStyle(fontSize: 16, color: Colors.black),),
+        backgroundColor: Colors.white,
+      ),
+      resizeToAvoidBottomInset: false,
+      body: _list(),
+    );
+  }
+
+  Widget _list(){
     return Container(
-      child: Container(
         color: Colors.white,
-        child: ListView.builder(
+        child: currentNews.length != 0 ? ListView.builder(
             itemCount: currentNews.length,
             itemBuilder: (context, i) {
               return _card(currentNews[i], i);
-            }),
-      ),
+            })
+            : const Center(child: Text('No items', style: TextStyle(fontSize: 20, color: Colors.orange),))
     );
   }
 
@@ -43,33 +57,50 @@ class _MainScreenState extends State<MainScreen> {
         bottomRight: const Radius.circular(40.0),
       )),
       child: Container(
-        padding: EdgeInsets.only(left: 25.0, top: 10.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Row(
               children: [
-                Text(
-                  news.firstName + " " + news.lastName,
-                  style: TextStyle(fontSize: 16, color: Colors.black),
+                Image(
+                    image: AssetImage("assets/avatar.png"),),
+                Container(
+                  padding: EdgeInsets.only(left: 40),
+                  child: Text(
+                    news.firstName + " " + news.lastName,
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                  ),
                 )
               ],
             ),
-            Row(children: [
-              Text(news.caption!,
-                  style: TextStyle(fontSize: 16, color: Colors.black54))
+            Row(
+                children: [
+              Container(
+                padding: EdgeInsets.only(left: 15, top: 10),
+                width: MediaQuery.of(context).size.width*0.8,
+                child: Text(news.caption!,
+                    style: TextStyle(fontSize: 16, color: Colors.black54), textAlign: TextAlign.left,),
+              )
             ]),
             Row(
               children: [
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _likes[index] = !_likes[index];
-                    });
-                  },
-                  icon: Icon(Icons.favorite_border,
-                      color: _likes[index] ? Colors.red : Colors.grey,
-                      size: 25.0),
+                Container(
+                  padding: EdgeInsets.only(top: 10.0),
+                  child: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _likes[index] = !_likes[index];
+                      });
+                    },
+                    icon: Icon(Icons.favorite_border,
+                        color: _likes[index] ? Colors.red : Colors.grey,
+                        size: 25.0),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.only(left: 15, top: 10),
+                  child: Image(
+                    image: AssetImage("assets/comment.png"),),
                 )
               ],
             )
@@ -100,6 +131,11 @@ class _MainScreenState extends State<MainScreen> {
         redefinitionNews();
       });
     });
+    /*setState(() {
+      fillList();
+      _likes = List.filled(currentNews.length, false);
+      redefinitionNews();
+    });*/
   }
 
   void redefinitionNews() {
@@ -107,6 +143,17 @@ class _MainScreenState extends State<MainScreen> {
       if (news.caption == null) {
         news.caption = " ";
       }
+    }
+  }
+
+  void fillList(){
+    for (int i = 1; i < 25; i++){
+      currentNews.add(News(id: i,
+              caption: "Приложения Flutter могут включать в себя как код, так и ресурсы (иногда называемые ресурсами). "
+                  "Ресурс - это файл, который объединен и развернут с вашим приложением и доступен во время выполнения. "
+                  "Общие типы ресурсов включают статические данные (например, файлы JSON), файлы конфигурации, значки и изображения (JPEG, WebP, GIF, анимированные WebP / GIF, PNG, BMP и WBMP).",
+          firstName: "test",
+          lastName: "test"));
     }
   }
 }

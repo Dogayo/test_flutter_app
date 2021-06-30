@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:test_flutter_app/model/news.dart';
-import 'dart:convert' as json;
 
 class AuthenticationRepository {
 
@@ -16,7 +15,8 @@ class AuthenticationRepository {
         return "No answer";
       }
     } catch (e) {
-      throw Exception("Exception: $e ");
+      //throw Exception("Exception: $e ");
+      return "false";
     }
   }
 
